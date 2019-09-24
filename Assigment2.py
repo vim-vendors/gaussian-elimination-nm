@@ -31,13 +31,6 @@ def NaiveGauss(aMatrix, bMatrix):
 			subVector[x] = 0.0
 	return subVector
 #end NaiveGauss
-print("Pre Naive")
-print(a)
-print(b)
-print(NaiveGauss(a,b))
-print("Post Naive")
-print(a)
-print(b)
 
 def Gauss(size, aMatrix):
 	print("Pre - aMatrix: ")
@@ -58,7 +51,6 @@ def Gauss(size, aMatrix):
 			if (r > rmax):	
 				rmax = r
 				j = i
-    	#Lj <--> Lk? Algorithm will not work without this
 		temp = indexArray[j]
 		indexArray[j] = indexArray[k]
 		indexArray[k] = temp
@@ -83,7 +75,7 @@ def Solve(size, aMatrix, indexArray, bMatrix, subVector):
 	for k in range(0, size-1):
 		for i in range(k+1, n):
 			bMatrix[indexArray[i]] -= (aMatrix[indexArray[i], k] * bMatrix[indexArray[k]])
-	subVector[size-1] = ( bMatrix[indexArray[size-1]] / aMatrix[indexArray[size-1], size-1])
+	subVector[size-1] = (bMatrix[indexArray[size-1]] / aMatrix[indexArray[size-1], size-1])
 	for i in range(size-2, -1, -1):
 		_sum = bMatrix[indexArray[i]]
 		for j in range(i+1, n):
