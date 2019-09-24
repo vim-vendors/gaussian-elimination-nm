@@ -7,6 +7,8 @@ a = np.array([[3, 4, 3],
 
 b = np.array([10, 7, 15], dtype='float32')
 
+
+
 def NaiveGauss(aMatrix, bMatrix):
 	size = len(bMatrix)
 	subVector = np.zeros(size)
@@ -32,11 +34,14 @@ def NaiveGauss(aMatrix, bMatrix):
 	return subVector
 #end NaiveGauss
 
-def Gauss(size, aMatrix):
+indexArray = np.zeros((len(a),), dtype=int)
+ratioArray = np.zeros(len(a))
+
+def Gauss(size, aMatrix, indexArray, ratioArray):
 	print("Pre - aMatrix: ")
 	print(aMatrix)
-	indexArray = np.zeros((size,), dtype=int)
-	ratioArray = np.zeros(size)
+	#indexArray = np.zeros((size,), dtype=int)
+	#ratioArray = np.zeros(size)
 	for i in range(0, size):
 		indexArray[i] = i
 		smax = 0.0
@@ -59,28 +64,35 @@ def Gauss(size, aMatrix):
 			aMatrix[indexArray[i], k] = xMult
 			for j in range(k+1, size):
 				aMatrix[indexArray[i], j] -= (xMult*aMatrix[indexArray[k], j])
-#need to return something?
+	#need to return something?
 	print("Post - aMatrix: ")
 	print(aMatrix)
 	print("ratioArray:")
 	print(ratioArray)
 	print("indexArray: ")
 	print(indexArray)
+	#pdb.set_trace()
 #end Gauss
 
 print("Calling Gauss w/SPP method: ")
-Gauss(len(b),a)
+Gauss(len(b),a, indexArray, ratioArray)
 
-def Solve(size, aMatrix, indexArray, bMatrix, subVector):
+
+def Solve(size, aMatrix, indexArray, bMatrix):
+	subVector = np.zeros(size)
 	for k in range(0, size-1):
-		for i in range(k+1, n):
+		for i in range(k+1, size):
 			bMatrix[indexArray[i]] -= (aMatrix[indexArray[i], k] * bMatrix[indexArray[k]])
 	subVector[size-1] = (bMatrix[indexArray[size-1]] / aMatrix[indexArray[size-1], size-1])
 	for i in range(size-2, -1, -1):
 		_sum = bMatrix[indexArray[i]]
-		for j in range(i+1, n):
+		for j in range(i+1, size):
 			_sum -= (aMatrix[indexArray[i], j] * subVector[j]) 	
 		subVector[i] = _sum / aMatrix[indexArray[i], i] 
-#need to return something?
-#need print statements
+	#need to return something?
+	return subVector
+	#need print statements
 #end Solve	
+
+print("Calling Solve w/SPP method: ")
+print(Solve(len(a),a,indexArray, b))
