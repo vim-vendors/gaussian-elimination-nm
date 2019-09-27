@@ -1,7 +1,9 @@
 import re
 import numpy as np	
-import pdb
 import sys
+import time
+#time the script, ends when method is called and completes
+start_time = time.time()
 
 #get command line arguments
 data_file = ''
@@ -117,8 +119,24 @@ def Solve(size, aMatrix, indexArray, bMatrix):
 #choose method based on scaledTrue boolean value
 if (scaledTrue == False):
 	print("Naive Gaussian method: ")
-	print(NaiveGauss(a_array, b_array))
+	solution = str(NaiveGauss(a_array, b_array))
+	print(solution)
+	print("--- %s seconds ---" % (time.time() - start_time))
 else:
 	print("Gaussian Elimination w/ SPP method: ")
 	Gauss(len(b_array),a_array, indexArray, scaleArray)
-	print(Solve(len(a_array),a_array,indexArray, b_array))
+	solution = str(Solve(len(a_array),a_array,indexArray, b_array))
+	print(solution)
+	print("--- %s seconds ---" % (time.time() - start_time))
+
+#output to file
+outputSol = data_file
+extract = re.search('(.+?).lin', outputSol)
+if extract:
+    outputSol = str(extract.group(1)) + ".sol"
+
+outputFile = open(outputSol, 'w')
+outputFile.write(solution)
+outputFile.close()
+helloFile .close()
+
