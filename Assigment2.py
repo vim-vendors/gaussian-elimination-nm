@@ -1,13 +1,42 @@
+import re
 import numpy as np	
 import pdb
+import sys
 
-a = np.array([[3, 4, 3],
-		  [1, 5, -1],
-		  [6, 3, 7]], dtype='float32')
+#get command line arguments
+data_file = ''
+scaledTrue = False
 
-b = np.array([10, 7, 15], dtype='float32')
+if (len(sys.argv) == 2):
+	data_file = str(sys.argv[1])
+elif (len(sys.argv) == 3):
+	data_file = str(sys.argv[2])
+	scaledTrue = True
 
+#extract file info and parse with regex
+helloFile = open(data_file)
+helloContent = helloFile.read()
+p = re.compile('\n')
+n = len(p.findall(helloContent)) - 1
+p = re.compile('-?[0-9]+.[0-9]+')
+string_array = p.findall(helloContent)
+a_array = np.zeros(shape=(n,n))
+b_array = np.zeros(n)
+count = 0
 
+#extract and initialize A Matrix
+for x in range(n):
+	for y in range(n):
+		a_array[x, y] = float(string_array[count])
+		count += 1
+
+#extract and initialize B Matrix
+for z in range(n):
+	b_array[z] = float(string_array[count])
+	count += 1
+
+indexArray = np.zeros((len(a_array),), dtype=int)
+scaleArray = np.zeros(len(a_array))
 
 def NaiveGauss(aMatrix, bMatrix):
 	size = len(bMatrix)
@@ -33,9 +62,6 @@ def NaiveGauss(aMatrix, bMatrix):
 			xValues[x] = 0.0
 	return xValues
 #end NaiveGauss
-
-indexArray = np.zeros((len(a),), dtype=int)
-scaleArray = np.zeros(len(a))
 
 #computes the scale array, index array and zeroes out entries in matrix
 def Gauss(size, aMatrix, indexArray, scaleArray):
@@ -86,12 +112,13 @@ def Solve(size, aMatrix, indexArray, bMatrix):
 			_sum -= (aMatrix[indexArray[i], j] * xValues[j]) 	
 		xValues[i] = _sum / aMatrix[indexArray[i], i] 
 	return xValues
-	#need print statements
 #end Solve	
 
-
-
-print("Calling Gauss w/SPP method: ")
-Gauss(len(b),a, indexArray, scaleArray)
-print("Calling Solve w/SPP method: ")
-print(Solve(len(a),a,indexArray, b))
+#choose method based on scaledTrue boolean value
+if (scaledTrue == False):
+	print("Naive Gaussian method: ")
+	print(NaiveGauss(a_array, b_array))
+else:
+	print("Gaussian Elimination w/ SPP method: ")
+	Gauss(len(b_array),a_array, indexArray, scaleArray)
+	print(Solve(len(a_array),a_array,indexArray, b_array))
